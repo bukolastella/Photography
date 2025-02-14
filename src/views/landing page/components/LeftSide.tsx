@@ -1,5 +1,6 @@
 import React from "react";
 import { LandingImagesLeft } from "./data";
+import Image from "next/image";
 
 const LeftSide = () => {
   return (
@@ -11,19 +12,24 @@ const LeftSide = () => {
         </div>
         <div className=" grid grid-cols-5 grid-rows-7 h-full w-full gap-1">
           {LandingImagesLeft.map((ev, index) => (
-            <div key={index} className={`bg-red-300 ${ev.span}`}></div>
+            <div key={index} className={`relative ${ev.span}`}>
+              <Image fill src={ev.img} alt="" className="object-cover" />
+            </div>
           ))}
         </div>
       </div>
-      <div className="w-[100%] mt-auto flex flex-col gap-2">
+      <div className="w-[100%] mt-auto flex flex-col gap-4">
         <p>
           {`Through my lens, I transform ordinary moments into extraordinary
   stories. Specializing in creative and conceptual photography, I
   blend artistry with emotion to craft images that speak beyond
   words. From intimate portraits to bold editorial shoots, every
   frame is a masterpiece waiting to be told. Let's create something
-  unforgettable. 📸✨`}
+  unforgettable.`}
         </p>
+        <button className=" mr-auto rounded-full bg-black text-white px-6 py-2 ">
+          See Collections
+        </button>
       </div>
     </div>
   );
