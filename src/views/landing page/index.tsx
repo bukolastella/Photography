@@ -1,9 +1,16 @@
+"use client";
 import React from "react";
 import Header from "../layout/Header";
 import LeftSide from "./components/LeftSide";
 import RightSide from "./components/RightSide";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const LandingPage = () => {
+  useGSAP(() => {
+    gsap.to("body", { opacity: 1, duration: 0.5 });
+  }, []);
+
   return (
     <div className=" p-6 mx-auto min-h-screen flex flex-col gap-2">
       <Header />

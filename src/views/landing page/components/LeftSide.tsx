@@ -1,11 +1,11 @@
 "use client";
 import React, { useRef } from "react";
 import { LandingImagesLeft } from "./data";
-import Image from "next/image";
 import WaveTextEffect from "@/views/effects/WaveTextEffect";
 import { useGSAP } from "@gsap/react";
 import SplitType from "split-type";
 import gsap from "gsap";
+import SlideImage from "./SlideImage";
 
 const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
@@ -30,6 +30,8 @@ const LeftSide = () => {
       fadeLines.forEach((ev) => {
         tl.from(ev.querySelectorAll(".fade-word"), { yPercent: 100 }, ">");
       });
+
+      gsap.effects.aniSlideImage(".slide-image");
     },
     { scope: container }
   );
@@ -50,9 +52,13 @@ const LeftSide = () => {
         </div>
         <div className=" grid grid-cols-5 grid-rows-7 h-full w-full gap-1">
           {LandingImagesLeft.map((ev, index) => (
-            <div key={index} className={`relative ${ev.span}`}>
-              <Image fill src={ev.img} alt="" className="object-cover" />
-            </div>
+            <SlideImage
+              key={index}
+              img={ev.img}
+              xOrigin={ev.xOrigin}
+              yOrigin={ev.yOrigin}
+              span={ev.span}
+            />
           ))}
         </div>
       </div>
