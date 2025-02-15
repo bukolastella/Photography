@@ -51,6 +51,6 @@ export const LandingImagesLeft = [
   },
   {
     img: Img10,
-    span: "col-start-4 row-start-5 col-span-3 row-span-3",
+    span: "col-start-4 row-start-5 col-span-2 row-span-3",
   },
 ];
