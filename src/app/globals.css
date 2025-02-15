@@ -20,7 +20,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  opacity: 0;
+  /* opacity: 0; */
 }
 
 h1,

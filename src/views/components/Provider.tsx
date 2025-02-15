@@ -12,7 +12,7 @@ interface Props {
 const Provider: FC<Props> = ({ children }) => {
   gsap.registerEffect({
     name: "aniSlideImage",
-    effect: (targets: string) => {
+    effect: (targets: string, config: any) => {
       const elements = (gsap.utils.toArray(targets) as HTMLDivElement[]).filter(
         (target: HTMLDivElement) => {
           const yorigin = Number(target.getAttribute("data-yorigin"));
@@ -21,7 +21,7 @@ const Provider: FC<Props> = ({ children }) => {
         }
       );
 
-      return gsap
+      const tl = gsap
         .timeline()
         .set(elements, {
           opacity: 0,
@@ -53,8 +53,19 @@ const Provider: FC<Props> = ({ children }) => {
             ease: "power1.out",
           },
         });
+
+      // if (config.tweening) {
+      //   tl.progress(0.5);
+
+      //   return tl;
+      // }
+      console.log(tl, "ll", tl.duration(), tl.totalDuration());
+
+      tl.pause().progress(1);
+
+      return tl;
     },
-    defaults: {},
+    defaults: { tweening: false },
     extendTimeline: true,
   });
 

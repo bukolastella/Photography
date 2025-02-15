@@ -1,18 +1,32 @@
 "use client";
-import React, { useRef } from "react";
+import React, { FC, useRef } from "react";
 import { LandingImages } from "./data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SlideImage from "./SlideImage";
 
-const RightSide = () => {
+interface Props {
+  complete: boolean;
+}
+
+const RightSide: FC<Props> = ({ complete }) => {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      gsap.effects.aniSlideImage(".slide-image");
+      if (!complete) {
+        const wow = gsap.effects.aniSlideImage(".slide-image", {
+          tweening: true,
+        });
+
+        wow.progress(1);
+        console.log(wow, "wow");
+
+        return;
+      }
+      // gsap.effects.aniSlideImage(".slide-image");
     },
-    { scope: container }
+    { scope: container, dependencies: [complete] }
   );
 
   return (

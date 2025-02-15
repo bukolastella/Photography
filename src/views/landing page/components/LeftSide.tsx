@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { FC, useRef } from "react";
 import { LandingImagesLeft } from "./data";
 import WaveTextEffect from "@/views/effects/WaveTextEffect";
 import { useGSAP } from "@gsap/react";
@@ -7,13 +7,20 @@ import SplitType from "split-type";
 import gsap from "gsap";
 import SlideImage from "./SlideImage";
 
-const LeftSide = () => {
+interface Props {
+  complete: boolean;
+}
+
+const LeftSide: FC<Props> = ({ complete }) => {
   const container = useRef<HTMLDivElement>(null);
   const mainTl = useRef<gsap.core.Timeline>(null);
 
   const { contextSafe } = useGSAP(
     () => {
-      new SplitType(".fade-in", {
+      if (!complete) return;
+      if (!container.current) return;
+
+      new SplitType(container.current.querySelectorAll(".fade-in"), {
         types: "lines,words",
         lineClass: "overflow-hidden fade-line",
         wordClass: "fade-word ",
@@ -41,7 +48,7 @@ const LeftSide = () => {
         .to(".btn-ball", { scale: 22 })
         .to(".btn-text", { color: "black" }, "<");
     },
-    { scope: container }
+    { scope: container, dependencies: [complete] }
   );
 
   const onMouseEnter = contextSafe(() => {

@@ -37,7 +37,7 @@ export const LandingImages = [
   },
   {
     img: Img5,
-    span: "row-start-3 col-span-3 row-span-4 z-[2]",
+    span: "row-start-3 col-span-3 row-span-4 z-[1]",
     xOrigin: 0,
     yOrigin: 0,
   },
