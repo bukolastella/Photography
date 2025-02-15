@@ -6,6 +6,7 @@ import RightSide from "./components/RightSide";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useAnimationStore } from "@/store/useAnimationStore";
+import LenBox from "../components/LenBox";
 
 const LandingPage = () => {
   const blurry = useRef<HTMLDivElement>(null);
@@ -13,6 +14,7 @@ const LandingPage = () => {
   const lenText = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const setPageLoaded = useAnimationStore((state) => state.setPageLoaded);
+  const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
 
   useGSAP(() => {
     gsap.to([mainRef.current], { autoAlpha: 1 });
@@ -58,7 +60,9 @@ const LandingPage = () => {
         <RightSide />
       </div>
       <div
-        className="fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white"
+        className={`fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white ${
+          isPageLoaded ? "hidden" : ""
+        }`}
         ref={blurry}
       >
         <div
@@ -69,21 +73,7 @@ const LandingPage = () => {
             Timeless Shots
           </h1>
 
-          {/* top */}
-          <div className="w-[33%] h-[2px] bg-black absolute top-0 left-0"></div>
-          <div className="w-[33%] h-[2px] bg-black absolute top-0 right-0"></div>
-
-          {/* left */}
-          <div className="h-[33%] w-[2px] bg-black absolute top-0 left-0"></div>
-          <div className="h-[33%] w-[2px] bg-black absolute bottom-0 left-0"></div>
-
-          {/* bottom */}
-          <div className="w-[33%] h-[2px] bg-black absolute bottom-0 left-0"></div>
-          <div className="w-[33%] h-[2px] bg-black absolute bottom-0 right-0"></div>
-
-          {/* right */}
-          <div className="h-[33%] w-[2px] bg-black absolute top-0 right-0"></div>
-          <div className="h-[33%] w-[2px] bg-black absolute bottom-0 right-0"></div>
+          <LenBox />
         </div>
       </div>
     </div>

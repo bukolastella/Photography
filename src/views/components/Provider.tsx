@@ -1,8 +1,9 @@
 "use client";
-import React, { FC, ReactNode } from "react";
+import React, { FC, MouseEvent, ReactNode, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import LenBox from "./LenBox";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface Props {
@@ -27,7 +28,6 @@ const Provider: FC<Props> = ({ children }) => {
           opacity: 0,
         })
         .to(elements, { opacity: 1, duration: 0.1 }, 0.2)
-        .addLabel("yo")
         .from(elements, {
           xPercent: (index: number, target: HTMLElement) => {
             const value = Number(target.dataset.xorigin) || 0;
@@ -60,7 +60,47 @@ const Provider: FC<Props> = ({ children }) => {
     extendTimeline: true,
   });
 
-  return <div>{children}</div>;
+  const app = useRef<HTMLDivElement>(null);
+  const xTo = useRef<gsap.QuickToFunc>(null);
+  const yTo = useRef<gsap.QuickToFunc>(null);
+
+  const { contextSafe } = useGSAP(
+    () => {
+      xTo.current = gsap.quickTo(".capture", "x", {
+        duration: 0.8,
+        ease: "power3",
+      });
+
+      yTo.current = gsap.quickTo(".capture", "y", {
+        duration: 0.8,
+        ease: "power3",
+      });
+    },
+    { scope: app }
+  );
+
+  const moveShape = contextSafe((e: MouseEvent) => {
+    if (!xTo.current || !yTo.current) return;
+    xTo.current(e.clientX);
+    yTo.current(e.clientY);
+  });
+
+  return (
+    <div ref={app} onMouseMove={(e) => moveShape(e)}>
+      <div
+        className="fixed top-0 left-0 -translate-y-1/2 -translate-x-1/2  w-[100px] h-[100px] flex items-center justify-center capture z-[2] pointer-events-none"
+        style={{
+          // WebkitMaskImage:
+          //   "radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)",
+          backdropFilter: "grayscale(1)",
+        }}
+      >
+        <div className=" w-[10px] h-[10px] border border-black rounded-full !bg-transparent"></div>
+        <LenBox />
+      </div>
+      {children}
+    </div>
+  );
 };
 
 export default Provider;
