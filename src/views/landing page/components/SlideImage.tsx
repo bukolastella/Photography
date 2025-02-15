@@ -6,16 +6,17 @@ interface Props {
   yOrigin: number;
   img: StaticImageData;
   span: string;
+  sizes: string;
 }
 
-const SlideImage: FC<Props> = ({ xOrigin, yOrigin, img, span }) => {
+const SlideImage: FC<Props> = ({ xOrigin, yOrigin, img, span, sizes }) => {
   return (
     <div
       className={`relative slide-image ${span}`}
       data-xorigin={xOrigin}
       data-yorigin={yOrigin}
     >
-      <Image fill src={img} alt="" className="object-cover" />
+      <Image fill src={img} alt="" className="object-cover" sizes={sizes} />
     </div>
   );
 };

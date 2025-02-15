@@ -89,6 +89,7 @@ const LeftSide = () => {
               xOrigin={ev.xOrigin}
               yOrigin={ev.yOrigin}
               span={ev.span}
+              sizes={ev.sizes}
             />
           ))}
         </div>

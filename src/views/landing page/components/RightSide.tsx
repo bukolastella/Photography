@@ -37,6 +37,7 @@ const RightSide = () => {
           xOrigin={ev.xOrigin}
           yOrigin={ev.yOrigin}
           span={ev.span}
+          sizes={ev.sizes}
         />
       ))}
     </div>
