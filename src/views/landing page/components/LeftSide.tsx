@@ -17,7 +17,15 @@ const LeftSide: FC<Props> = ({ complete }) => {
 
   const { contextSafe } = useGSAP(
     () => {
-      if (!complete) return;
+      const slideTemp = gsap.effects.aniSlideImage(
+        ".slide-image"
+      ) as gsap.core.Timeline;
+
+      if (!complete) {
+        slideTemp.pause(0.1);
+        return;
+      }
+
       if (!container.current) return;
 
       new SplitType(container.current.querySelectorAll(".fade-in"), {
@@ -39,7 +47,7 @@ const LeftSide: FC<Props> = ({ complete }) => {
         tl.from(ev.querySelectorAll(".fade-word"), { yPercent: 100 }, ">");
       });
 
-      gsap.effects.aniSlideImage(".slide-image");
+      slideTemp.play();
 
       mainTl.current = gsap
         .timeline({
@@ -48,7 +56,7 @@ const LeftSide: FC<Props> = ({ complete }) => {
         .to(".btn-ball", { scale: 22 })
         .to(".btn-text", { color: "black" }, "<");
     },
-    { scope: container, dependencies: [complete] }
+    { scope: container, dependencies: [complete], revertOnUpdate: true }
   );
 
   const onMouseEnter = contextSafe(() => {

@@ -12,7 +12,7 @@ interface Props {
 const Provider: FC<Props> = ({ children }) => {
   gsap.registerEffect({
     name: "aniSlideImage",
-    effect: (targets: string, config: any) => {
+    effect: (targets: string) => {
       const elements = (gsap.utils.toArray(targets) as HTMLDivElement[]).filter(
         (target: HTMLDivElement) => {
           const yorigin = Number(target.getAttribute("data-yorigin"));
@@ -27,6 +27,7 @@ const Provider: FC<Props> = ({ children }) => {
           opacity: 0,
         })
         .to(elements, { opacity: 1, duration: 0.1 }, 0.2)
+        .addLabel("yo")
         .from(elements, {
           xPercent: (index: number, target: HTMLElement) => {
             const value = Number(target.dataset.xorigin) || 0;
@@ -54,18 +55,8 @@ const Provider: FC<Props> = ({ children }) => {
           },
         });
 
-      // if (config.tweening) {
-      //   tl.progress(0.5);
-
-      //   return tl;
-      // }
-      console.log(tl, "ll", tl.duration(), tl.totalDuration());
-
-      tl.pause().progress(1);
-
       return tl;
     },
-    defaults: { tweening: false },
     extendTimeline: true,
   });
 

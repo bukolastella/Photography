@@ -18,7 +18,7 @@ const LandingPage = () => {
   };
 
   useGSAP(() => {
-    gsap.to([mainRef.current, blurry.current], { autoAlpha: 1 });
+    gsap.to([mainRef.current], { autoAlpha: 1 });
 
     gsap
       .timeline({
@@ -50,12 +50,15 @@ const LandingPage = () => {
   return (
     <div className="p-6 mx-auto min-h-screen flex flex-col gap-2">
       <Header />
-      <div className="grid-cols-2 gap-0 grid flex-1" ref={mainRef}>
+      <div
+        className="grid-cols-2 gap-0 grid flex-1 opacity-0 invisible"
+        ref={mainRef}
+      >
         <LeftSide complete={complete} />
         <RightSide complete={complete} />
       </div>
       <div
-        className="fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white opacity-0 invisible"
+        className="fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white"
         ref={blurry}
       >
         <div

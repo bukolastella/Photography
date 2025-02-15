@@ -14,19 +14,17 @@ const RightSide: FC<Props> = ({ complete }) => {
 
   useGSAP(
     () => {
+      const slideTemp = gsap.effects.aniSlideImage(
+        ".slide-image"
+      ) as gsap.core.Timeline;
+
       if (!complete) {
-        const wow = gsap.effects.aniSlideImage(".slide-image", {
-          tweening: true,
-        });
-
-        wow.progress(1);
-        console.log(wow, "wow");
-
-        return;
+        slideTemp.pause(0.1);
+      } else {
+        slideTemp.play();
       }
-      // gsap.effects.aniSlideImage(".slide-image");
     },
-    { scope: container, dependencies: [complete] }
+    { scope: container, dependencies: [complete], revertOnUpdate: true }
   );
 
   return (
