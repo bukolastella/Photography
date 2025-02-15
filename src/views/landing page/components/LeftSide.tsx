@@ -9,8 +9,9 @@ import SlideImage from "./SlideImage";
 
 const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
+  const mainTl = useRef<gsap.core.Timeline>(null);
 
-  useGSAP(
+  const { contextSafe } = useGSAP(
     () => {
       new SplitType(".fade-in", {
         types: "lines,words",
@@ -32,9 +33,26 @@ const LeftSide = () => {
       });
 
       gsap.effects.aniSlideImage(".slide-image");
+
+      mainTl.current = gsap
+        .timeline({
+          paused: true,
+        })
+        .to(".btn-ball", { scale: 22 })
+        .to(".btn-text", { color: "black" }, "<");
     },
     { scope: container }
   );
+
+  const onMouseEnter = contextSafe(() => {
+    if (!mainTl.current) return;
+    mainTl.current.restart();
+  });
+
+  const onMouseLeave = contextSafe(() => {
+    if (!mainTl.current) return;
+    mainTl.current.reverse();
+  });
 
   return (
     <div
@@ -71,8 +89,13 @@ const LeftSide = () => {
   frame is a masterpiece waiting to be told. Let's create something
   unforgettable.`}
         </p>
-        <button className=" mr-auto rounded-full bg-black text-white px-6 py-2 ">
-          See Collections
+        <button
+          className=" mr-auto rounded-full bg-black text-white px-6 py-2 relative overflow-hidden z-[1] border border-black"
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+        >
+          <span className="btn-text z-[1]">See Collections</span>
+          <div className="btn-ball absolute bottom-0 left-1/2 w-[10px] translate-y-full -translate-x-1/2 rounded-full h-[10px] bg-white -z-[1]"></div>
         </button>
       </div>
     </div>
