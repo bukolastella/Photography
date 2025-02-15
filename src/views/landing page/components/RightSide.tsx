@@ -1,16 +1,14 @@
 "use client";
-import React, { FC, useRef } from "react";
+import React, { useRef } from "react";
 import { LandingImages } from "./data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SlideImage from "./SlideImage";
+import { useAnimationStore } from "@/store/useAnimationStore";
 
-interface Props {
-  complete: boolean;
-}
-
-const RightSide: FC<Props> = ({ complete }) => {
+const RightSide = () => {
   const container = useRef<HTMLDivElement>(null);
+  const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
 
   useGSAP(
     () => {
@@ -18,13 +16,13 @@ const RightSide: FC<Props> = ({ complete }) => {
         ".slide-image"
       ) as gsap.core.Timeline;
 
-      if (!complete) {
+      if (!isPageLoaded) {
         slideTemp.pause(0.1);
       } else {
         slideTemp.play();
       }
     },
-    { scope: container, dependencies: [complete], revertOnUpdate: true }
+    { scope: container, dependencies: [isPageLoaded], revertOnUpdate: true }
   );
 
   return (

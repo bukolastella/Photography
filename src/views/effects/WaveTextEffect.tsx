@@ -3,6 +3,7 @@ import React, { FC, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import SplitType from "split-type";
+import { useAnimationStore } from "@/store/useAnimationStore";
 
 interface Props {
   text: string;
@@ -11,10 +12,11 @@ interface Props {
 
 const WaveTextEffect: FC<Props> = ({ text, isOnClick }) => {
   const container = useRef<HTMLDivElement>(null);
+  const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
 
   useGSAP(
     () => {
-      if (!container.current) return;
+      if (!container.current || !isPageLoaded) return;
       const moveAwaytext = new SplitType(
         container.current.querySelectorAll(".move-away"),
         {
@@ -43,7 +45,7 @@ const WaveTextEffect: FC<Props> = ({ text, isOnClick }) => {
       };
     },
 
-    { scope: container }
+    { scope: container, dependencies: [isPageLoaded] }
   );
 
   return (

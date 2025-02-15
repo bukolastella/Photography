@@ -1,28 +1,25 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Header from "../layout/Header";
 import LeftSide from "./components/LeftSide";
 import RightSide from "./components/RightSide";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useAnimationStore } from "@/store/useAnimationStore";
 
 const LandingPage = () => {
   const blurry = useRef<HTMLDivElement>(null);
   const len = useRef<HTMLDivElement>(null);
   const lenText = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
-  const [complete, setComplete] = useState(false);
-
-  const onComplete = () => {
-    setComplete(true);
-  };
+  const setPageLoaded = useAnimationStore((state) => state.setPageLoaded);
 
   useGSAP(() => {
     gsap.to([mainRef.current], { autoAlpha: 1 });
 
     gsap
       .timeline({
-        onComplete,
+        onComplete: setPageLoaded,
       })
       .to(blurry.current, {
         backdropFilter: "blur(0px)",
@@ -44,7 +41,10 @@ const LandingPage = () => {
         },
         "<"
       )
-      .to(blurry.current, { opacity: 0, duration: 1 });
+      .to(blurry.current, {
+        opacity: 0,
+        duration: 1,
+      });
   }, []);
 
   return (
@@ -54,8 +54,8 @@ const LandingPage = () => {
         className="grid-cols-2 gap-0 grid flex-1 opacity-0 invisible"
         ref={mainRef}
       >
-        <LeftSide complete={complete} />
-        <RightSide complete={complete} />
+        <LeftSide />
+        <RightSide />
       </div>
       <div
         className="fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white"

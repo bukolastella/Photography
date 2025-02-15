@@ -1,19 +1,17 @@
 "use client";
-import React, { FC, useRef } from "react";
+import React, { useRef } from "react";
 import { LandingImagesLeft } from "./data";
 import WaveTextEffect from "@/views/effects/WaveTextEffect";
 import { useGSAP } from "@gsap/react";
 import SplitType from "split-type";
 import gsap from "gsap";
 import SlideImage from "./SlideImage";
+import { useAnimationStore } from "@/store/useAnimationStore";
 
-interface Props {
-  complete: boolean;
-}
-
-const LeftSide: FC<Props> = ({ complete }) => {
+const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
   const mainTl = useRef<gsap.core.Timeline>(null);
+  const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
 
   const { contextSafe } = useGSAP(
     () => {
@@ -21,7 +19,7 @@ const LeftSide: FC<Props> = ({ complete }) => {
         ".slide-image"
       ) as gsap.core.Timeline;
 
-      if (!complete) {
+      if (!isPageLoaded) {
         slideTemp.pause(0.1);
         return;
       }
@@ -44,7 +42,7 @@ const LeftSide: FC<Props> = ({ complete }) => {
       });
 
       fadeLines.forEach((ev) => {
-        tl.from(ev.querySelectorAll(".fade-word"), { yPercent: 100 }, ">");
+        tl.from(ev.querySelectorAll(".fade-word"), { yPercent: 100 }, ">-+20%");
       });
 
       slideTemp.play();
@@ -56,7 +54,7 @@ const LeftSide: FC<Props> = ({ complete }) => {
         .to(".btn-ball", { scale: 22 })
         .to(".btn-text", { color: "black" }, "<");
     },
-    { scope: container, dependencies: [complete], revertOnUpdate: true }
+    { scope: container, dependencies: [isPageLoaded], revertOnUpdate: true }
   );
 
   const onMouseEnter = contextSafe(() => {
