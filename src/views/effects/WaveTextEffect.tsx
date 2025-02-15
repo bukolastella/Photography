@@ -17,31 +17,40 @@ const WaveTextEffect: FC<Props> = ({ text, isOnClick }) => {
   useGSAP(
     () => {
       if (!container.current || !isPageLoaded) return;
-      const moveAwaytext = new SplitType(
-        container.current.querySelectorAll(".move-away"),
-        {
-          types: "words,chars",
-        }
+
+      const split = new SplitType(
+        container.current.querySelectorAll(".move-away")
       );
-      const moveTotext = new SplitType(
-        container.current.querySelectorAll(".move-to"),
-        { types: "words,chars" }
-      );
+
+      if (!split.chars) return;
+
+      split.chars.forEach((char) => {
+        const clone = char.cloneNode(true) as HTMLElement;
+        clone.classList.add("clone");
+
+        clone.style.position = "absolute";
+        clone.style.top = "0";
+        clone.style.left = "0";
+
+        char.appendChild(clone);
+      });
+
+      gsap.set(split.chars, { yPercent: 100 });
 
       gsap
         .timeline({
           defaults: {
             duration: 0.3,
-            ease: "none",
+            ease: "power1.out",
             paused: isOnClick,
           },
         })
-        .to(moveAwaytext.chars, { yPercent: -100, stagger: 0.1 })
-        .to(moveTotext.chars, { yPercent: -100, stagger: 0.1 }, 0);
+        .to(".clone", { yPercent: -100, stagger: 0.1 })
+        .set(".clone", { opacity: 0, stagger: 0.1 }, 0.2)
+        .to(split.chars, { yPercent: 0, stagger: 0.1 }, 0);
 
       return () => {
-        moveAwaytext.revert();
-        moveTotext.revert();
+        split.revert();
       };
     },
 
@@ -50,10 +59,7 @@ const WaveTextEffect: FC<Props> = ({ text, isOnClick }) => {
 
   return (
     <div ref={container} className="overflow-y-hidden relative">
-      <div className="move-away [font-kerning:none]">{text}</div>
-      <div className="bottom-0 absolute move-to translate-y-full [font-kerning:none]">
-        {text}
-      </div>
+      <div className="move-away [font-kerning:none] relative">{text}</div>
     </div>
   );
 };

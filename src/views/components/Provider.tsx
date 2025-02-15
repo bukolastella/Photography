@@ -1,5 +1,12 @@
 "use client";
-import React, { FC, MouseEvent, ReactNode, useRef } from "react";
+import React, {
+  FC,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -22,30 +29,46 @@ const Provider: FC<Props> = ({ children }) => {
         }
       );
 
-      const tl = gsap
-        .timeline()
-        .set(elements, {
+      const mm = gsap.matchMedia();
+
+      const tl = gsap.timeline();
+
+      mm.add("(min-width: 1024px)", () => {
+        tl.set(elements, {
           opacity: 0,
         })
-        .to(elements, { opacity: 1, duration: 0.1 }, 0.2)
-        .from(elements, {
-          xPercent: (index: number, target: HTMLElement) => {
-            const value = Number(target.dataset.xorigin) || 0;
+          .to(elements, { opacity: 1, duration: 0.1 }, 0.2)
+          .from(elements, {
+            xPercent: (index: number, target: HTMLElement) => {
+              const value = Number(target.dataset.xorigin) || 0;
 
-            if (value === 0) return 0;
-            const temp = 4;
+              if (value === 0) return 0;
+              const temp = 4;
 
-            return value < 0 ? value - temp : value + temp;
-          },
-          yPercent: (index: number, target: HTMLElement) => {
-            const value = Number(target.dataset.yorigin) || 0;
+              return value < 0 ? value - temp : value + temp;
+            },
+            yPercent: (index: number, target: HTMLElement) => {
+              const value = Number(target.dataset.yorigin) || 0;
 
-            if (value === 0) return 0;
-            const temp = 4;
+              if (value === 0) return 0;
+              const temp = 4;
 
-            return value < 0 ? value - temp : value + temp;
-          },
-          rotation: "random(45,90)",
+              return value < 0 ? value - temp : value + temp;
+            },
+            rotation: "random(45,90)",
+            duration: 2,
+            ease: "expo.out",
+            stagger: {
+              amount: 1,
+              from: "random",
+              ease: "power1.out",
+            },
+          });
+      });
+
+      mm.add("(max-width: 1023px)", () => {
+        tl.from(elements, {
+          opacity: 0,
           duration: 2,
           ease: "expo.out",
           stagger: {
@@ -54,6 +77,7 @@ const Provider: FC<Props> = ({ children }) => {
             ease: "power1.out",
           },
         });
+      });
 
       return tl;
     },
@@ -63,6 +87,11 @@ const Provider: FC<Props> = ({ children }) => {
   const app = useRef<HTMLDivElement>(null);
   const xTo = useRef<gsap.QuickToFunc>(null);
   const yTo = useRef<gsap.QuickToFunc>(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   const { contextSafe } = useGSAP(
     () => {
@@ -90,6 +119,7 @@ const Provider: FC<Props> = ({ children }) => {
       <div
         className="fixed top-0 left-0 -translate-y-1/2 -translate-x-1/2  w-[100px] h-[100px] flex items-center justify-center capture z-[2] pointer-events-none"
         style={{
+          display: isTouchDevice ? "hidden" : "flex",
           // WebkitMaskImage:
           //   "radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)",
           backdropFilter: "grayscale(1)",

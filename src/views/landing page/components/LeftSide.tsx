@@ -69,15 +69,15 @@ const LeftSide = () => {
 
   return (
     <div
-      className=" bg-white h-full w-full border-r shadow-[-4px_8px_10px_0px_#00000020,4px_4px_10px_0px_#00000020] p-6 pr-1 flex flex-col gap-2"
+      className=" bg-white h-full w-full border-r shadow-[-4px_8px_10px_0px_#00000020,4px_4px_10px_0px_#00000020] p-[5%] sm:p-6 sm:pr-1 flex flex-col gap-2"
       ref={container}
     >
-      <div className="flex h-full">
-        <div className="flex flex-col justify-end w-full h-full">
-          <h1 className=" text-5xl">
+      <div className="flex h-[300px] lg:h-full flex-col-reverse sm:flex-row">
+        <div className="flex flex-col justify-end w-full sm:h-full">
+          <h1 className=" text-clamp-5xl">
             <WaveTextEffect text="Bukola Stella" />
           </h1>
-          <h2 className="text-xl fade-in [font-kerning:none]">
+          <h2 className="text-clamp-xl fade-in [font-kerning:none]">
             Creative Photographer
           </h2>
         </div>
@@ -94,7 +94,7 @@ const LeftSide = () => {
         </div>
       </div>
       <div className="w-[100%] mt-auto flex flex-col gap-4">
-        <p className="fade-in [font-kerning:none]">
+        <p className="fade-in [font-kerning:none] text-clamp-md">
           {`Through my lens, I transform ordinary moments into extraordinary
   stories. Specializing in creative and conceptual photography, I
   blend artistry with emotion to craft images that speak beyond
@@ -107,7 +107,7 @@ const LeftSide = () => {
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         >
-          <span className="btn-text z-[1]">See Collections</span>
+          <span className="btn-text z-[1] text-clamp-md">See Collections</span>
           <div className="btn-ball absolute bottom-0 left-1/2 w-[10px] translate-y-full -translate-x-1/2 rounded-full h-[10px] bg-white -z-[1]"></div>
         </button>
       </div>

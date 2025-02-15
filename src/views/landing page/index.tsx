@@ -50,10 +50,10 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="p-6 mx-auto min-h-screen flex flex-col gap-2">
+    <div className="py-6 px-[5%] sm:p-6 mx-auto min-h-screen flex flex-col gap-2">
       <Header />
       <div
-        className="grid-cols-2 gap-0 grid flex-1 opacity-0 invisible"
+        className="lg:grid-cols-2 gap-0 grid flex-1 opacity-0 invisible"
         ref={mainRef}
       >
         <LeftSide />
