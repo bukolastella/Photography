@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { collectionsData } from "./data";
 import { useCollectionsStore } from "@/store/useCollectionsStore";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { debounce } from "@/views/components/data";
 
 const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
@@ -48,7 +49,7 @@ const LeftSide = () => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
+      debounce((entries: IntersectionObserverEntry[]) => {
         entries.forEach((entry) => {
           const id = Number(entry.target.getAttribute("data-id"));
 
@@ -59,7 +60,7 @@ const LeftSide = () => {
             setVisibleId(previousId);
           }
         });
-      },
+      }, 500),
       { threshold: 0.5 }
     );
 
