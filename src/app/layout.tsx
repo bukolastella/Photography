@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import Provider from "@/views/components/Provider";
+import Header from "@/views/layout/Header";
 
 const playfairSans = Playfair_Display({
   variable: "--font-playfair-display",
@@ -28,7 +29,13 @@ export default function RootLayout({
       <body
         className={`${playfairSans.variable} ${sourceSans.variable} antialiased`}
       >
-        <Provider>{children}</Provider>
+        <Provider>
+          <div className="py-6 px-[5%] sm:p-6 mx-auto min-h-screen flex flex-col gap-2">
+            <Header />
+
+            {children}
+          </div>
+        </Provider>
       </body>
     </html>
   );

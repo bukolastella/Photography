@@ -11,6 +11,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import LenBox from "./LenBox";
+import { useAnimationStore } from "@/store/useAnimationStore";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface Props {
@@ -88,6 +89,11 @@ const Provider: FC<Props> = ({ children }) => {
   const xTo = useRef<gsap.QuickToFunc>(null);
   const yTo = useRef<gsap.QuickToFunc>(null);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const setPageLoaded = useAnimationStore((state) => state.setPageLoaded);
+  const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
+  const blurry = useRef<HTMLDivElement>(null);
+  const len = useRef<HTMLDivElement>(null);
+  const lenText = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -104,6 +110,40 @@ const Provider: FC<Props> = ({ children }) => {
         duration: 0.8,
         ease: "power3",
       });
+
+      //
+      gsap
+        .timeline({
+          onComplete: setPageLoaded,
+        })
+        .to(blurry.current, {
+          backdropFilter: "blur(0px)",
+          duration: 2,
+          ease: "steps(3)",
+        })
+        .to(
+          len.current,
+          { scale: 0.8, duration: 2, ease: "elastic.inOut" },
+          "<"
+        )
+        .to(
+          lenText.current,
+          { filter: "blur(0px)", duration: 3, ease: "elastic.inOut" },
+          "<"
+        )
+        .to(lenText.current, { opacity: 0 })
+        .to(
+          len.current,
+          {
+            opacity: 0,
+            ease: "elastic.inOut",
+          },
+          "<"
+        )
+        .to(blurry.current, {
+          opacity: 0,
+          duration: 1,
+        });
     },
     { scope: app }
   );
@@ -129,6 +169,23 @@ const Provider: FC<Props> = ({ children }) => {
         <LenBox />
       </div>
       {children}
+      <div
+        className={`fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white ${
+          isPageLoaded ? "hidden" : ""
+        }`}
+        ref={blurry}
+      >
+        <div
+          className="relative w-64 h-40 flex items-center justify-center"
+          ref={len}
+        >
+          <h1 className="blur text-2xl" ref={lenText}>
+            Timeless Shots
+          </h1>
+
+          <LenBox />
+        </div>
+      </div>
     </div>
   );
 };

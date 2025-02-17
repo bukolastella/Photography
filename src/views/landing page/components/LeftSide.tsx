@@ -68,10 +68,7 @@ const LeftSide = () => {
   });
 
   return (
-    <div
-      className=" bg-white h-full w-full border-r shadow-[-4px_8px_10px_0px_#00000020,4px_4px_10px_0px_#00000020] p-[5%] sm:p-6 sm:pr-1 flex flex-col gap-2"
-      ref={container}
-    >
+    <div className="flex flex-col gap-2 h-full" ref={container}>
       <div className="flex h-[300px] lg:h-full flex-col-reverse sm:flex-row">
         <div className="flex flex-col justify-end w-full sm:h-full">
           <h1 className=" text-clamp-5xl">

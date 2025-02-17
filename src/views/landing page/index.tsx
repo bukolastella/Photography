@@ -1,83 +1,11 @@
 "use client";
-import React, { useRef } from "react";
-import Header from "../layout/Header";
+import React from "react";
 import LeftSide from "./components/LeftSide";
 import RightSide from "./components/RightSide";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { useAnimationStore } from "@/store/useAnimationStore";
-import LenBox from "../components/LenBox";
+import CustomLayout from "../components/CustomLayout";
 
 const LandingPage = () => {
-  const blurry = useRef<HTMLDivElement>(null);
-  const len = useRef<HTMLDivElement>(null);
-  const lenText = useRef<HTMLDivElement>(null);
-  const mainRef = useRef<HTMLDivElement>(null);
-  const setPageLoaded = useAnimationStore((state) => state.setPageLoaded);
-  const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
-
-  useGSAP(() => {
-    gsap.to([mainRef.current], { autoAlpha: 1 });
-
-    gsap
-      .timeline({
-        onComplete: setPageLoaded,
-      })
-      .to(blurry.current, {
-        backdropFilter: "blur(0px)",
-        duration: 2,
-        ease: "steps(3)",
-      })
-      .to(len.current, { scale: 0.8, duration: 2, ease: "elastic.inOut" }, "<")
-      .to(
-        lenText.current,
-        { filter: "blur(0px)", duration: 3, ease: "elastic.inOut" },
-        "<"
-      )
-      .to(lenText.current, { opacity: 0 })
-      .to(
-        len.current,
-        {
-          opacity: 0,
-          ease: "elastic.inOut",
-        },
-        "<"
-      )
-      .to(blurry.current, {
-        opacity: 0,
-        duration: 1,
-      });
-  }, []);
-
-  return (
-    <div className="py-6 px-[5%] sm:p-6 mx-auto min-h-screen flex flex-col gap-2">
-      <Header />
-      <div
-        className="lg:grid-cols-2 gap-0 grid flex-1 opacity-0 invisible"
-        ref={mainRef}
-      >
-        <LeftSide />
-        <RightSide />
-      </div>
-      <div
-        className={`fixed top-0 left-0 w-full h-full backdrop-blur-[3px] flex items-center justify-center z-[2] bg-white ${
-          isPageLoaded ? "hidden" : ""
-        }`}
-        ref={blurry}
-      >
-        <div
-          className="relative w-64 h-40 flex items-center justify-center"
-          ref={len}
-        >
-          <h1 className="blur text-2xl" ref={lenText}>
-            Timeless Shots
-          </h1>
-
-          <LenBox />
-        </div>
-      </div>
-    </div>
-  );
+  return <CustomLayout leftSide={<LeftSide />} rightSide={<RightSide />} />;
 };
 
 export default LandingPage;

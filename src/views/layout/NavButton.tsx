@@ -2,14 +2,16 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import Link from "next/link";
 import React, { FC, useRef } from "react";
 import SplitType from "split-type";
 
 interface Props {
   text: string;
+  href: string;
 }
 
-const NavButton: FC<Props> = ({ text }) => {
+const NavButton: FC<Props> = ({ text, href }) => {
   const container = useRef<HTMLDivElement>(null);
   const tl = useRef<gsap.core.Timeline>(null);
 
@@ -60,8 +62,9 @@ const NavButton: FC<Props> = ({ text }) => {
 
   return (
     <div ref={container}>
-      <button
-        className=" relative overflow-y-hidden"
+      <Link
+        href={href}
+        className="relative overflow-y-hidden block"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -69,7 +72,7 @@ const NavButton: FC<Props> = ({ text }) => {
         <div className="bottom-0 absolute reveal-to translate-y-full [font-kerning:none]">
           {text}
         </div>
-      </button>
+      </Link>
     </div>
   );
 };
