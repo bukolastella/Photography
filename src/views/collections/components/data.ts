@@ -11,6 +11,10 @@ import Img10 from "../../../../public/img-10.jpg";
 import { StaticImageData } from "next/image";
 
 function getRandomValues(arr: StaticImageData[], num = 7) {
+  // if (arr.length < num || typeof window === "undefined") {
+  //   return [Img1, Img2, Img3, Img4, Img5, Img6, Img7];
+  // }
+
   if (arr.length < num || typeof window === "undefined")
     throw new Error("Array has fewer elements than requested");
 

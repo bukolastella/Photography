@@ -4,28 +4,49 @@ import { collectionsData } from "./data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SplitType from "split-type";
+import { useCollectionsStore } from "@/store/useCollectionsStore";
 
 const RightSide = () => {
   const container = useRef<HTMLDivElement>(null);
+  const { visibleId } = useCollectionsStore();
+  const selectedContent = collectionsData[visibleId ? visibleId - 1 : 0];
 
   useGSAP(
     () => {
-      if (!container.current) return;
+      if (!container.current || !visibleId) return;
 
-      const split = new SplitType(
-        container.current.querySelectorAll(".side-up-text")
-      );
-      // gsap.set(".side-up", { overflowY: "hidden", yPercent: 100 });
-      gsap.from(".side-up", { yPercent: 100, delay: 1 });
-      gsap.from(split.chars, {
+      const tempNo = container.current.querySelector(
+        ".side-up-no"
+      ) as HTMLDivElement;
+      const tempText = container.current.querySelector(
+        ".side-up-text"
+      ) as HTMLDivElement;
+
+      const noSplit = new SplitType(tempNo);
+      const textSplit = new SplitType(tempText);
+
+      gsap.from(".side-up", { yPercent: 100 });
+      gsap.from([noSplit.chars, textSplit.chars], {
         yPercent: 100,
-        delay: 1,
         stagger: {
           amount: 0.8,
         },
+        onComplete: () => {
+          noSplit.revert();
+          textSplit.revert();
+        },
       });
+
+      return () => {
+        noSplit.revert();
+        textSplit.revert();
+      };
     },
-    { scope: container }
+    {
+      scope: container,
+      dependencies: [visibleId],
+      revertOnUpdate: true,
+    }
   );
 
   return (
@@ -35,7 +56,7 @@ const RightSide = () => {
           {collectionsData.map((ev, index) => {
             return (
               <button
-                className=" w-max flex items-center gap-2 text-clamp-md"
+                className="w-max flex items-center gap-2 text-clamp-md"
                 key={index}
               >
                 <div className=" w-[60px] h-[1px] bg-black"></div>
@@ -45,24 +66,23 @@ const RightSide = () => {
           })}
         </div>
 
-        <div className=" overflow-hidden">
-          <div className="text-clamp-5xl side-up-text [font-kerning:none]">
-            01
+        {visibleId && (
+          <div className=" overflow-hidden">
+            <div className="text-clamp-5xl side-up-no [font-kerning:none]">
+              {visibleId.toString().padStart(2, "0")}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className=" text-right flex flex-col gap-2">
         <div className=" overflow-y-hidden">
           <h1 className="text-clamp-4xl side-up-text [font-kerning:none]">
-            Light & Shadow Chronicles
+            {selectedContent.name}
           </h1>
         </div>
         <div className=" overflow-y-hidden">
-          <p className="text-clamp-md side-up">
-            A play of contrast, depth, and emotion through the lens of artistic
-            vision.
-          </p>
+          <p className="text-clamp-md side-up">{selectedContent.subText}</p>
         </div>
       </div>
     </div>

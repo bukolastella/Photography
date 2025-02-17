@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -10,6 +10,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
   const elementRef = useCollectionsStore((state) => state.elementRef);
+  const elementsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const { setVisibleId } = useCollectionsStore();
 
   useGSAP(
     () => {
@@ -23,31 +25,62 @@ const LeftSide = () => {
       ScrollTrigger.create({
         trigger: elementRef.current,
         start: "top+=-50px top",
+        end: "+=2000",
         pin: true,
         pinSpacing: true,
       });
 
       gsap.from(elements, {
         yPercent: 100,
-        stagger: 1,
+        stagger: 0.5,
         ease: "none",
         scrollTrigger: {
           trigger: container.current,
-          markers: true,
-          scrub: 0.3,
+          // markers: true,
+          scrub: 1,
           start: "top top",
-          end: "+=500",
+          end: "+=1000",
         },
       });
     },
     { scope: container, dependencies: [elementRef], revertOnUpdate: true }
   );
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = Number(entry.target.getAttribute("data-id"));
+
+          if (entry.isIntersecting) {
+            setVisibleId(id);
+          } else {
+            const previousId = id > 0 ? id - 1 : null;
+            setVisibleId(previousId);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    elementsRef.current.forEach((element) => {
+      if (element) observer.observe(element);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [setVisibleId]);
+
   return (
     <div className=" h-full relative overflow-hidden" ref={container}>
       <div className="absolute left-0 top-0 w-full h-full backdrop-grayscale z-[1] origin-[left_center] border-black border-r-[2px] film"></div>
       {collectionsData.map((ev, index) => (
         <div
+          ref={(el) => {
+            if (el) elementsRef.current[index] = el;
+          }}
+          data-id={(index + 1).toString()}
           key={index}
           className={`tamper-slide absolute left-0 top-0 w-full h-full gap-2 flex z[${
             index + 1
