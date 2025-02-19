@@ -12,7 +12,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import LenBox from "./LenBox";
 import { useAnimationStore } from "@/store/useAnimationStore";
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
 
 interface Props {
   children: ReactNode;

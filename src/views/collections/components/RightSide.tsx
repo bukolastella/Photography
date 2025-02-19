@@ -8,8 +8,9 @@ import { useCollectionsStore } from "@/store/useCollectionsStore";
 
 const RightSide = () => {
   const container = useRef<HTMLDivElement>(null);
-  const { visibleId, setVisibleId, setManualScroll } = useCollectionsStore();
-  const selectedContent = collectionsData[visibleId ? visibleId - 1 : 0];
+  const { visibleId, scrollTl } = useCollectionsStore();
+  const selectedContent =
+    collectionsData[visibleId && visibleId > 1 ? visibleId - 1 : 1];
 
   useGSAP(
     () => {
@@ -62,8 +63,18 @@ const RightSide = () => {
                 }`}
                 key={index}
                 onClick={() => {
-                  setManualScroll(true);
-                  setVisibleId(index + 1);
+                  if (!scrollTl?.scrollTrigger) return;
+
+                  scrollTl.scrollTrigger.scroll(
+                    scrollTl.scrollTrigger.labelToScroll(`${index + 1}`)
+                  );
+
+                  // gsap.to(window, {
+                  //   duration: 0,
+                  //   scrollTo: scrollTl?.scrollTrigger?.labelToScroll(
+                  //     `${index + 1}`
+                  //   ),
+                  // });
                 }}
               >
                 <div

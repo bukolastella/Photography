@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -12,8 +12,14 @@ const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
   const elementRef = useCollectionsStore((state) => state.elementRef);
   const elementsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const { visibleId, setVisibleId, manualScroll, setManualScroll } =
-    useCollectionsStore();
+  const { setVisibleId, scrollTl, setScrollTl } = useCollectionsStore();
+
+  useEffect(() => {
+    if (!scrollTl) {
+      const tl = gsap.timeline();
+      setScrollTl(tl);
+    }
+  }, [scrollTl, setScrollTl]);
 
   useGSAP(
     () => {
@@ -22,7 +28,7 @@ const LeftSide = () => {
         .toArray(".tamper-slide")
         .slice(1) as HTMLDivElement[];
 
-      if (!elementRef?.current) return;
+      if (!elementRef?.current || !scrollTl) return;
 
       ScrollTrigger.create({
         trigger: elementRef.current,
@@ -32,45 +38,32 @@ const LeftSide = () => {
         pinSpacing: true,
       });
 
-      gsap.from(elements, {
-        yPercent: 100,
-        stagger: 0.5,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container.current,
-          // markers: true,
-          scrub: 1,
-          start: "top top",
-          end: "+=1000",
-        },
+      elements.forEach((ev, index) => {
+        scrollTl
+          .from(
+            ev,
+            {
+              yPercent: 100,
+              ease: "none",
+            },
+            index + 0.5
+          )
+          .addLabel(`${index + 2}`);
+      });
+
+      ScrollTrigger.create({
+        trigger: container.current,
+        // markers: true,
+        scrub: 1,
+        start: "top top",
+        end: "+=1000",
+        animation: scrollTl,
       });
     },
     { scope: container, dependencies: [elementRef], revertOnUpdate: true }
   );
 
-  useGSAP(
-    () => {
-      if (!container.current || !visibleId || !manualScroll) return;
-
-      const element = gsap.utils.toArray(".tamper-slide")[
-        visibleId - 1
-      ] as HTMLDivElement[];
-
-      gsap.fromTo(
-        element,
-        { yPercent: 100 },
-        { yPercent: 0, duration: 2, onComplete: () => setManualScroll(false) }
-      );
-    },
-    {
-      scope: container,
-      dependencies: [visibleId],
-    }
-  );
-
   useLayoutEffect(() => {
-    if (manualScroll) return;
-
     const observer = new IntersectionObserver(
       debounce((entries: IntersectionObserverEntry[]) => {
         if (entries.length > 1) return;
@@ -97,7 +90,7 @@ const LeftSide = () => {
     return () => {
       observer.disconnect();
     };
-  }, [setVisibleId, manualScroll]);
+  }, [setVisibleId]);
 
   return (
     <div className=" h-full relative overflow-hidden" ref={container}>

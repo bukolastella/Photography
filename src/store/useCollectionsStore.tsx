@@ -4,10 +4,10 @@ import { RefObject } from "react";
 interface RefStore {
   elementRef: RefObject<HTMLElement | null> | null;
   setElementRef: (ref: RefObject<HTMLElement | null>) => void;
-  visibleId: null | number;
+  visibleId: number;
   setVisibleId: (id: number) => void;
-  manualScroll: boolean;
-  setManualScroll: (value: boolean) => void;
+  scrollTl: gsap.core.Timeline | null;
+  setScrollTl: (ref: gsap.core.Timeline | null) => void;
 }
 
 export const useCollectionsStore = create<RefStore>((set) => ({
@@ -15,6 +15,6 @@ export const useCollectionsStore = create<RefStore>((set) => ({
   setElementRef: (ref) => set({ elementRef: ref }),
   visibleId: 1,
   setVisibleId: (id) => set({ visibleId: id }),
-  manualScroll: false,
-  setManualScroll: (value) => set({ manualScroll: value }),
+  scrollTl: null,
+  setScrollTl: (ref) => set({ scrollTl: ref }),
 }));
