@@ -6,8 +6,10 @@ import gsap from "gsap";
 import SplitType from "split-type";
 import { useCollectionsStore } from "@/store/useCollectionsStore";
 import CustomBtn from "@/views/components/CustomBtn";
+import { useRouter } from "next/navigation";
 
 const RightSide = () => {
+  const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const { visibleId, scrollTl } = useCollectionsStore();
   const selectedContent =
@@ -114,7 +116,11 @@ const RightSide = () => {
           <p className="text-clamp-md side-up">{selectedContent.subText}</p>
         </div>
 
-        <CustomBtn text="View All Images" classNames="sm:ml-auto mt-6" />
+        <CustomBtn
+          text="View All Images"
+          classNames="sm:ml-auto mt-6"
+          onClick={() => router.push(`collections/${selectedContent.name}`)}
+        />
       </div>
     </div>
   );

@@ -5,9 +5,10 @@ import React, { FC, useRef } from "react";
 interface Props {
   text: string;
   classNames?: string;
+  onClick: () => void;
 }
 
-const CustomBtn: FC<Props> = ({ text, classNames }) => {
+const CustomBtn: FC<Props> = ({ text, classNames, onClick }) => {
   const btnRef = useRef<HTMLButtonElement>(null);
   const mainTl = useRef<gsap.core.Timeline>(null);
 
@@ -34,6 +35,7 @@ const CustomBtn: FC<Props> = ({ text, classNames }) => {
 
   return (
     <button
+      onClick={onClick}
       className={`rounded-full bg-black text-white px-6 py-2 relative overflow-hidden z-[1] border border-black ${classNames}`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

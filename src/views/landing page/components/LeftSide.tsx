@@ -8,8 +8,10 @@ import gsap from "gsap";
 import SlideImage from "./SlideImage";
 import { useAnimationStore } from "@/store/useAnimationStore";
 import CustomBtn from "@/views/components/CustomBtn";
+import { useRouter } from "next/navigation";
 
 const LeftSide = () => {
+  const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const isPageLoaded = useAnimationStore((state) => state.isPageLoaded);
 
@@ -83,7 +85,11 @@ const LeftSide = () => {
   frame is a masterpiece waiting to be told. Let's create something
   unforgettable.`}
         </p>
-        <CustomBtn text="See Collections" classNames="mr-auto" />
+        <CustomBtn
+          text="See Collections"
+          classNames="mr-auto"
+          onClick={() => router.push("/collections")}
+        />
       </div>
     </div>
   );
