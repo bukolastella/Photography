@@ -21,10 +21,10 @@ const CustomLayout: FC<Props> = ({ leftSide, rightSide }) => {
         className="lg:grid-cols-2 gap-0 grid flex-1 opacity-0 invisible h-full"
         ref={mainRef}
       >
-        <div className=" bg-white h-full w-full border-r shadow-[-4px_8px_10px_0px_#00000020,4px_4px_10px_0px_#00000020] p-[5%] sm:p-6 sm:pr-1">
+        <div className=" bg-white h-full w-full border-r shadow-[-4px_8px_10px_0px_#00000020,4px_4px_10px_0px_#00000020] p-[5%] lg:p-6 lg:pr-1">
           {leftSide}
         </div>
-        <div className="bg-white h-[600px] lg:h-full w-full border-l shadow-[4px_8px_10px_0px_#00000020,-4px_4px_10px_0px#00000020]  p-[5%] sm:p-6 sm:pl-1">
+        <div className="bg-white h-[600px] lg:h-full w-full border-l shadow-[4px_8px_10px_0px_#00000020,-4px_4px_10px_0px#00000020]  p-[5%] lg:p-6 lg:pl-1">
           {rightSide}
         </div>
       </div>

@@ -24,40 +24,45 @@ const LeftSide = () => {
   useGSAP(
     () => {
       gsap.to(".film", { delay: 1, scaleX: 0, duration: 1, ease: "none" });
-      const elements = gsap.utils
-        .toArray(".tamper-slide")
-        .slice(1) as HTMLDivElement[];
 
-      if (!elementRef?.current || !scrollTl) return;
+      const mm = gsap.matchMedia();
 
-      ScrollTrigger.create({
-        trigger: elementRef.current,
-        start: "top+=-50px top",
-        end: "+=2000",
-        pin: true,
-        pinSpacing: true,
-      });
+      mm.add("(min-width: 1024px)", () => {
+        const elements = gsap.utils
+          .toArray(".tamper-slide")
+          .slice(1) as HTMLDivElement[];
 
-      elements.forEach((ev, index) => {
-        scrollTl
-          .from(
-            ev,
-            {
-              yPercent: 100,
-              ease: "none",
-            },
-            index + 0.5
-          )
-          .addLabel(`${index + 2}`);
-      });
+        if (!elementRef?.current || !scrollTl) return;
 
-      ScrollTrigger.create({
-        trigger: container.current,
-        // markers: true,
-        scrub: 1,
-        start: "top top",
-        end: "+=1000",
-        animation: scrollTl,
+        ScrollTrigger.create({
+          trigger: elementRef.current,
+          start: "top+=-50px top",
+          end: "+=2000",
+          pin: true,
+          pinSpacing: true,
+        });
+
+        elements.forEach((ev, index) => {
+          scrollTl
+            .from(
+              ev,
+              {
+                yPercent: 100,
+                ease: "none",
+              },
+              index + 0.5
+            )
+            .addLabel(`${index + 2}`);
+        });
+
+        ScrollTrigger.create({
+          trigger: container.current,
+          // markers: true,
+          scrub: 1,
+          start: "top top",
+          end: "+=1000",
+          animation: scrollTl,
+        });
       });
     },
     { scope: container, dependencies: [elementRef], revertOnUpdate: true }
@@ -93,7 +98,10 @@ const LeftSide = () => {
   }, [setVisibleId]);
 
   return (
-    <div className=" h-full relative overflow-hidden" ref={container}>
+    <div
+      className=" h-[300px] lg:h-full relative overflow-hidden"
+      ref={container}
+    >
       <div className="absolute left-0 top-0 w-full h-full backdrop-grayscale z-[1] origin-[left_center] border-black border-r-[2px] film"></div>
       {collectionsData.map((ev, index) => (
         <div

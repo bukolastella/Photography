@@ -100,6 +100,16 @@ const Provider: FC<Props> = ({ children }) => {
     setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
   }, []);
 
+  useEffect(() => {
+    if (!isPageLoaded) {
+      document.documentElement.classList.add("overflow-hidden", "h-screen");
+      document.body.classList.add("overflow-hidden", "h-screen");
+    } else {
+      document.documentElement.classList.remove("overflow-hidden", "h-screen");
+      document.body.classList.remove("overflow-hidden", "h-screen");
+    }
+  }, [isPageLoaded]);
+
   const { contextSafe } = useGSAP(
     () => {
       xTo.current = gsap.quickTo(".capture", "x", {
