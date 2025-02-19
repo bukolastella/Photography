@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -12,7 +12,8 @@ const LeftSide = () => {
   const container = useRef<HTMLDivElement>(null);
   const elementRef = useCollectionsStore((state) => state.elementRef);
   const elementsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const { setVisibleId } = useCollectionsStore();
+  const { visibleId, setVisibleId, manualScroll, setManualScroll } =
+    useCollectionsStore();
 
   useGSAP(
     () => {
@@ -47,16 +48,41 @@ const LeftSide = () => {
     { scope: container, dependencies: [elementRef], revertOnUpdate: true }
   );
 
-  useEffect(() => {
+  useGSAP(
+    () => {
+      if (!container.current || !visibleId || !manualScroll) return;
+
+      const element = gsap.utils.toArray(".tamper-slide")[
+        visibleId - 1
+      ] as HTMLDivElement[];
+
+      gsap.fromTo(
+        element,
+        { yPercent: 100 },
+        { yPercent: 0, duration: 2, onComplete: () => setManualScroll(false) }
+      );
+    },
+    {
+      scope: container,
+      dependencies: [visibleId],
+    }
+  );
+
+  useLayoutEffect(() => {
+    if (manualScroll) return;
+
     const observer = new IntersectionObserver(
       debounce((entries: IntersectionObserverEntry[]) => {
+        if (entries.length > 1) return;
+
         entries.forEach((entry) => {
           const id = Number(entry.target.getAttribute("data-id"));
 
           if (entry.isIntersecting) {
             setVisibleId(id);
           } else {
-            const previousId = id > 0 ? id - 1 : null;
+            const previousId = id > 1 ? id - 1 : 1;
+
             setVisibleId(previousId);
           }
         });
@@ -71,7 +97,7 @@ const LeftSide = () => {
     return () => {
       observer.disconnect();
     };
-  }, [setVisibleId]);
+  }, [setVisibleId, manualScroll]);
 
   return (
     <div className=" h-full relative overflow-hidden" ref={container}>

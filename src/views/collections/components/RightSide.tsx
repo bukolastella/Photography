@@ -8,7 +8,7 @@ import { useCollectionsStore } from "@/store/useCollectionsStore";
 
 const RightSide = () => {
   const container = useRef<HTMLDivElement>(null);
-  const { visibleId } = useCollectionsStore();
+  const { visibleId, setVisibleId, setManualScroll } = useCollectionsStore();
   const selectedContent = collectionsData[visibleId ? visibleId - 1 : 0];
 
   useGSAP(
@@ -25,6 +25,7 @@ const RightSide = () => {
       const noSplit = new SplitType(tempNo);
       const textSplit = new SplitType(tempText);
 
+      gsap.to(".bar-active", { width: 60 });
       gsap.from(".side-up", { yPercent: 100 });
       gsap.from([noSplit.chars, textSplit.chars], {
         yPercent: 100,
@@ -56,10 +57,20 @@ const RightSide = () => {
           {collectionsData.map((ev, index) => {
             return (
               <button
-                className="w-max flex items-center gap-2 text-clamp-md"
+                className={`w-max flex items-center gap-2 text-clamp-md ${
+                  visibleId && visibleId === index + 1 && "font-semibold"
+                }`}
                 key={index}
+                onClick={() => {
+                  setManualScroll(true);
+                  setVisibleId(index + 1);
+                }}
               >
-                <div className=" w-[60px] h-[1px] bg-black"></div>
+                <div
+                  className={`w-[40px] h-[1px] bg-black ${
+                    visibleId && visibleId === index + 1 && "bar-active"
+                  }`}
+                ></div>
                 {ev.name}
               </button>
             );
