@@ -11,12 +11,14 @@ import Img10 from "../../../../public/img-10.jpg";
 import { StaticImageData } from "next/image";
 
 function getRandomValues(arr: StaticImageData[], num = 7) {
-  // if (arr.length < num || typeof window === "undefined") {
-  //   return [Img1, Img2, Img3, Img4, Img5, Img6, Img7];
-  // }
-
-  if (arr.length < num || typeof window === "undefined")
+  if (arr.length < num) {
     throw new Error("Array has fewer elements than requested");
+  }
+
+  // During SSR (build time), return a predictable subset instead of random
+  if (typeof window === "undefined") {
+    return arr.slice(0, num);
+  }
 
   return arr.sort(() => Math.random() - 0.5).slice(0, num);
 }

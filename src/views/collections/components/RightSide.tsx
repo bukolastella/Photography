@@ -13,7 +13,7 @@ const RightSide = () => {
   const container = useRef<HTMLDivElement>(null);
   const { visibleId, scrollTl } = useCollectionsStore();
   const selectedContent =
-    collectionsData[visibleId && visibleId > 1 ? visibleId - 1 : 1];
+    collectionsData[visibleId ? visibleId - 1 : 0] || collectionsData[0];
 
   useGSAP(
     () => {
